@@ -49,7 +49,7 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
 
     var destination = pa.center - particle_pos
     const rad = 1.0.float
-    let rad_m_hole = 1.01 - pa.hole
+    let rad_m_hole = 1.01
 
     var dist : float32
     var dest_len = destination.length
@@ -65,7 +65,7 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
     if dist <= rad:
         force = (rad_m_hole - dist) * pa.gravity
         destination.normalize()
-        result = (destination * force) / 0.01
+        result = destination * force
         echo "result: " & ($result) & " p_pos: "& ($particle_pos) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
     else:
         result = newVector3(0,0,0)
