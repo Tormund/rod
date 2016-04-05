@@ -63,7 +63,8 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
     var force : float
 
     if dist <= rad:
-        force = (rad_m_hole - dist) * pa.gravity
+        force = pa.gravity
+        #(rad_m_hole - dist) * 
         destination.normalize()
         result = destination * force
         echo "result: " & ($result) & " p_pos: "& ($particle_pos) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
