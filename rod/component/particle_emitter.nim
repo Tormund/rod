@@ -53,7 +53,7 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
     var dest_len = destination.length
 
     if dest_len > 0 :
-        dist = pa.radius / dest_len
+        dist = dest_len / pa.radius
     else:
         dist = 0.0
 
@@ -63,6 +63,7 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
 
     if dist <= 1.0:
         force = (1.01 - dist) * pa.gravity
+
         result = destination * force
     else:
         result = newVector3(0,0,0)
