@@ -28,6 +28,46 @@ type
         initialLifetime*, remainingLifetime*: float
         pid*: float
 
+    ParticleAttractorType* = enum
+        pa_Circle,
+        pa_Rect
+
+    ParticleAttractor* = ref object of Component
+        center*: Vector3
+        hole: float
+        gravity*: float
+        radius: float
+
+method init(pa: ParticleAttractor)=
+    procCall pa.Component.init()
+    pa.center = pa.node.translation
+
+method setRadius(pa: ParticleAttractor, rad: float, hol: float = 0.1) =
+    pa.radius = rad
+    pa.hole = hol
+
+method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_part: proc(isReset:bool)) : Vector3 =
+
+    var destination = pa.center - particle_pos
+    var dist : float32
+    var dest_len = destination.length
+
+    if dest_len > 0 :
+        dist = pa.radius / dest_len
+    else:
+        dist = 0.0
+
+    echo "attractor: distance " & ($dist)
+
+    need_reset_part( dist < pa.hole)
+
+    if dist <= 1.0:
+        var force = (1.01 - dist) * pa.gravity
+        result = destination * force
+    else:
+        result = newVector3(0,0,0)
+
+type
     ParticleEmitter* = ref object of Component
         lifetime*: float
         birthRate*: float
@@ -45,8 +85,8 @@ type
 
         lastDrawTime: float
         lastBirthTime: float
-
         animation*: Animation
+        attractor: ParticleAttractor
 
 method init(p: ParticleEmitter) =
     procCall p.Component.init()
@@ -54,6 +94,11 @@ method init(p: ParticleEmitter) =
     p.animation = newAnimation()
     p.animation.numberOfLoops = -1
     p.drawDebug = false
+    p.attractor = nil
+
+method setAttractor*(pe: ParticleEmitter, pa: ParticleAttractor) =
+    if pe.attractor != pa:
+        pe.attractor = pa
 
 template stop*(e: ParticleEmitter) = e.birthRate = 999999999.0
 
@@ -75,7 +120,18 @@ template createParticle(p: ParticleEmitter, part: var ParticleData) =
 
 template updateParticle(p: ParticleEmitter, part: var ParticleData, timeDiff: float) =
     part.remainingLifetime -= timeDiff
-    part.velocity += p.gravity
+
+    var upd_velocity: Vector3
+    
+    if p.attractor != nil:
+        upd_velocity = p.attractor.applyGravity(part.coord, proc (isReset: bool ) = 
+                if isReset:
+                    part.remainingLifetime = -1
+            ) + p.gravity
+    else: 
+        upd_velocity = p.gravity
+
+    part.velocity += upd_velocity
 
     let velDiff = part.velocity * timeDiff / 0.01
     part.coord += velDiff
@@ -140,3 +196,5 @@ method visitProperties*(pe: ParticleEmitter, p: var PropertyVisitor) =
 
 registerComponent[ParticleEmitter]()
 registerComponent[Particle]()
+registerComponent[ParticleAttractor]()
+
