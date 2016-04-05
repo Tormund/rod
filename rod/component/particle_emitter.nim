@@ -40,7 +40,6 @@ type
 
 method init(pa: ParticleAttractor)=
     procCall pa.Component.init()
-    pa.center = pa.node.translation
 
 method setRadius*(pa: ParticleAttractor, rad: float, hol: float = 0.1) =
     pa.radius = rad
