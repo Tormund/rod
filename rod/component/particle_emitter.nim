@@ -56,8 +56,6 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
     else:
         dist = 0.0
 
-    echo "attractor: distance " & ($dist)
-
     need_reset_part( dist < pa.hole)
 
     if dist <= 1.0:
