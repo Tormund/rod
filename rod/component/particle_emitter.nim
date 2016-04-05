@@ -48,6 +48,8 @@ method setRadius*(pa: ParticleAttractor, rad: float, hol: float = 0.1) =
 method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_part: proc(isReset:bool)) : Vector3 =
 
     var destination = pa.center - particle_pos
+    const rad = 1.0.float
+    let rad_m_hole = 1.01 - pa.hole
 
     var dist : float32
     var dest_len = destination.length
@@ -56,13 +58,12 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
         dist = dest_len / pa.radius
     else:
         dist = 0.0
-
+        
     need_reset_part( dist < pa.hole)
-
     var force : float
 
-    if dist <= 1.0:
-        force = (1.01 - dist) * pa.gravity
+    if dist <= rad:
+        force = (rad_m_hole - dist) * pa.gravity
         destination.normalize()
         result = destination * force
         echo "result: " & ($result) & " p_pos: "& ($particle_pos) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
