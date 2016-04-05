@@ -63,13 +63,13 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
 
     if dist <= 1.0:
         force = (1.01 - dist) * pa.gravity
-
+        destination.normalize()
         result = destination * force
     else:
         result = newVector3(0,0,0)
         force = 0.0
 
-    echo "dest: " & ($destination) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
+    echo "result: " & ($result) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
 
 type
     ParticleEmitter* = ref object of Component
