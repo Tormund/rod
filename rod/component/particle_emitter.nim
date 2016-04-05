@@ -48,6 +48,7 @@ method setRadius*(pa: ParticleAttractor, rad: float, hol: float = 0.1) =
 method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_part: proc(isReset:bool)) : Vector3 =
 
     var destination = pa.center - particle_pos
+
     var dist : float32
     var dest_len = destination.length
 
@@ -58,11 +59,16 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
 
     need_reset_part( dist < pa.hole)
 
+    var force : float
+
     if dist <= 1.0:
-        var force = (1.01 - dist) * pa.gravity
+        force = (1.01 - dist) * pa.gravity
         result = destination * force
     else:
         result = newVector3(0,0,0)
+        force = 0.0
+
+    echo "dest: " & ($destination) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
 
 type
     ParticleEmitter* = ref object of Component
