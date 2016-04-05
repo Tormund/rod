@@ -58,14 +58,14 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
         dist = dest_len / pa.radius
     else:
         dist = 0.0
-        
+
     need_reset_part( dist < pa.hole)
     var force : float
 
     if dist <= rad:
         force = (rad_m_hole - dist) * pa.gravity
         destination.normalize()
-        result = destination * force
+        result = (destination * force) / 0.01
         echo "result: " & ($result) & " p_pos: "& ($particle_pos) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
     else:
         result = newVector3(0,0,0)
@@ -131,13 +131,14 @@ template updateParticle(p: ParticleEmitter, part: var ParticleData, timeDiff: fl
         upd_velocity = p.attractor.applyGravity(part.coord, proc (isReset: bool ) = 
                 if isReset:
                     part.remainingLifetime = -1
+
             ) + p.gravity
     else: 
         upd_velocity = p.gravity
 
     part.velocity += upd_velocity
 
-    let velDiff = part.velocity * timeDiff / 0.01
+    let velDiff = (part.velocity * timeDiff) / 0.01
     part.coord += velDiff
 
     let newRotation = (part.rotation * part.rotVelocity).normalized() * timeDiff / 0.01
