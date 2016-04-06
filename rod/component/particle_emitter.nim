@@ -64,7 +64,7 @@ method applyGravity(pa: ParticleAttractor, particle_pos: Vector3, need_reset_par
 
     if dist <= rad:
         force = pa.gravity
-        #(rad_m_hole - dist) * 
+        #(rad_m_hole - dist) * pa.gravity
         destination.normalize()
         result = destination * force
         echo "result: " & ($result) & " p_pos: "& ($particle_pos) & " dist: " & ($dist) & " dest len " & ($dest_len) & " force " & ($force)
@@ -199,6 +199,14 @@ method visitProperties*(pe: ParticleEmitter, p: var PropertyVisitor) =
     p.visitProperty("directionRandom", pe.directionRandom)
     p.visitProperty("velocity", pe.velocity)
     p.visitProperty("velocityRandom", pe.velocityRandom)
+    p.visitProperty("particleAttractor", pe.attractor)
+
+
+method visitProperties*(pa:ParticleAttractor, p: var PropertyVisitor) =
+    p.visitProperty("center", pa.center)
+    p.visitProperty("hole", pa.hole)
+    p.visitProperty("gravity", pa.gravity)
+    p.visitProperty("radius", pa.radius)
 
 registerComponent[ParticleEmitter]()
 registerComponent[Particle]()
