@@ -1,4 +1,4 @@
-import json
+import json, logging
 import nimx/[types, font, context, view, property_visitor, portable_gl, formatted_text]
 import rod / utils / [ property_desc, serialization_codegen, attributed_text ]
 import rod/[rod_types, node, component, viewport, component/camera]
@@ -230,7 +230,8 @@ proc fromPhantom(c: Text, p: object) =
     var font: Font
     if p.font.len != 0:
         font = newFontWithFace(p.font, fontSize)
-
+        if font.isNil:
+            error "Can't deserialize ", p.font, " size ", fontSize
     if font.isNil:
         font = systemFontOfSize(fontSize)
 
