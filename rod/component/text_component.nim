@@ -233,6 +233,7 @@ proc fromPhantom(c: Text, p: object) =
         if font.isNil:
             error "Can't deserialize ", p.font, " size ", fontSize
     if font.isNil:
+        warn "No fontface for ", fontSize
         font = systemFontOfSize(fontSize)
 
     font.face = p.font # Hack for bin format conversion. Should be fixed somehow?
