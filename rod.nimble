@@ -8,7 +8,7 @@ bin           = @["rod/tools/rodasset/rodasset", "editor/rodedit"]
 installExt    = @["nim"]
 
 # Dependencies
-requires "nimx"
+requires "https://github.com/tormund/nimx"
 requires "https://github.com/SSPKrolik/nimasset#head"
 requires "variant"
 requires "os_files"
